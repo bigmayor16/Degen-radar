@@ -1,3 +1,5 @@
+import SignOutButton from '@/components/SignOutButton';
+
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between py-3 border-b border-line last:border-0">
@@ -34,6 +36,8 @@ export default function SettingsPage() {
       <div className="rounded-lg border border-line bg-panel px-3.5">
         <Row label="Theme" value="Dark" />
       </div>
+
+      <SignOutButton />
     </div>
   );
 }
