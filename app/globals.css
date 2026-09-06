@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  background-color: #0A0E14;
+}
+
+body {
+  color: #E7EAEE;
+  background-color: #0A0E14;
+}
+
+::-webkit-scrollbar {
+  height: 0px;
+  width: 0px;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
