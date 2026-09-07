@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import SectionRow from '@/components/SectionRow';
 import { demoCoins } from '@/lib/demoData';
 
@@ -11,9 +12,14 @@ export default function DashboardPage() {
 
   return (
     <div>
-      <p className="text-xs text-muted mb-5 font-mono">
-        Scanning demo feed · refreshes every 60s once live
-      </p>
+      <div className="flex items-center justify-between mb-5">
+        <p className="text-xs text-muted font-mono">
+          Scanning demo feed · refreshes every 60s once live
+        </p>
+        <Link href="/feed" className="text-xs font-mono text-signal shrink-0 ml-2">
+          Live Feed →
+        </Link>
+      </div>
       <SectionRow glyph="🔥" title="Hot Now" coins={hotNow} />
       <SectionRow glyph="🚀" title="Fastest Growing" coins={fastestGrowing} />
       <SectionRow glyph="🆕" title="Newly Detected" coins={newlyDetected} />
