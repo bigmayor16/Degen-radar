@@ -3,7 +3,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { getXDataProvider } from '@/lib/providers';
 import type { XPost } from '@/lib/providers/types';
-import { aggregateTokens, type TokenStat } from '@/lib/detection/aggregate';
+import { aggregateTokens } from '@/lib/detection/aggregate';
+import { scoreTokens, type ScoredToken } from '@/lib/momentum';
 import DetectedTokenCard from '@/components/DetectedTokenCard';
 
 const filters = ['All', 'KOLs', 'CA Detected', 'High Engagement', 'Fastest Growing'] as const;
@@ -27,10 +28,10 @@ export default function TrendingPage() {
     };
   }, []);
 
-  const tokens = useMemo(() => aggregateTokens(posts), [posts]);
+  const tokens = useMemo(() => scoreTokens(aggregateTokens(posts)), [posts]);
 
   const filtered = useMemo(() => {
-    let list: TokenStat[] = tokens;
+    let list: ScoredToken[] = tokens;
     if (filter === 'KOLs') list = list.filter((t) => t.kolMentions > 0);
     if (filter === 'CA Detected') list = list.filter((t) => t.contractAddresses.length > 0);
     if (filter === 'High Engagement') list = [...list].sort((a, b) => b.engagement - a.engagement);
@@ -47,7 +48,7 @@ export default function TrendingPage() {
         </span>
       </div>
       <p className="text-[11px] text-muted font-mono mb-3">
-        Live ticker &amp; CA detection from the demo feed
+        Live ticker &amp; CA detection, scored by Degen Momentum
       </p>
 
       <div className="flex gap-2 overflow-x-auto no-scrollbar -mx-4 px-4 mb-5">
@@ -66,7 +67,7 @@ export default function TrendingPage() {
 
       {loading ? (
         <p className="text-sm text-muted font-mono py-10 text-center">
-          Scanning feed for tickers and contract addresses...
+          Scanning feed and scoring momentum...
         </p>
       ) : filtered.length === 0 ? (
         <p className="text-sm text-muted font-mono py-10 text-center">
