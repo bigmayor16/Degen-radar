@@ -13,6 +13,7 @@ export type TokenStat = {
   latestSeen: string;
   topAccounts: { username: string; count: number }[];
   contractAddresses: string[];
+  mentionTimestamps: string[];
 };
 
 export type ContractStat = {
@@ -93,6 +94,7 @@ export function aggregateTokens(posts: XPost[]): TokenStat[] {
       latestSeen,
       topAccounts,
       contractAddresses: Array.from(entry.cas),
+      mentionTimestamps: times.slice().sort((a, b) => a - b).map((t) => new Date(t).toISOString()),
     });
   });
 
