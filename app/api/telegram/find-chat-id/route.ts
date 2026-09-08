@@ -8,6 +8,14 @@ export async function GET() {
 
   const res = await fetch(`https://api.telegram.org/bot${botToken}/getUpdates`);
   const data = await res.json();
+
+  if (!data.ok) {
+    return NextResponse.json(
+      { error: `Telegram error: ${data.description ?? 'unknown error'}` },
+      { status: 400 }
+    );
+  }
+
   const messages = data.result ?? [];
   const last = messages[messages.length - 1];
 
