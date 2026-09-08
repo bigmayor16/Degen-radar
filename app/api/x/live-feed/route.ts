@@ -3,7 +3,7 @@ import { extractTickers } from '@/lib/detection/ticker';
 import { extractContractAddresses } from '@/lib/detection/contractAddress';
 
 const DEFAULT_QUERY =
-  '(solana OR pumpfun OR "pump.fun" OR "$SOL") (memecoin OR "meme coin" OR "fair launch" OR "stealth launch" OR CTO OR "contract address") lang:en -is:retweet';
+  '(pumpfun OR "pump.fun" OR solana) ("CA:" OR "contract address" OR "fair launch" OR "stealth launch" OR "just launched" OR CTO) lang:en -is:retweet';
 
 export async function GET(req: Request) {
   const apiKey = process.env.TWITTERAPI_IO_KEY;
