@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import SignOutButton from '@/components/SignOutButton';
 import { supabase } from '@/lib/supabaseClient';
+import { getProviderMode, setProviderMode, type ProviderMode } from '@/lib/providers';
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
@@ -16,12 +17,17 @@ function Row({ label, value }: { label: string; value: string }) {
 export default function SettingsPage() {
   const [accountCount, setAccountCount] = useState<number | null>(null);
   const [keywordCount, setKeywordCount] = useState<number | null>(null);
+  const [providerMode, setProviderModeState] = useState<ProviderMode>('demo');
 
   const [chatId, setChatId] = useState('');
   const [threshold, setThreshold] = useState(80);
   const [telegramSaved, setTelegramSaved] = useState(false);
   const [status, setStatus] = useState('');
   const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    setProviderModeState(getProviderMode());
+  }, []);
 
   useEffect(() => {
     async function load() {
@@ -103,9 +109,46 @@ export default function SettingsPage() {
       <h1 className="text-lg font-bold mb-4">Settings</h1>
 
       <h2 className="text-xs font-bold text-muted mb-1 mt-5">Data source</h2>
-      <div className="rounded-lg border border-line bg-panel px-3.5">
-        <Row label="X data provider" value="Demo Mode" />
-        <Row label="Refresh interval" value="60s" />
+      <div className="rounded-lg border border-line bg-panel p-3.5">
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-sm">X data provider</span>
+          <div className="flex gap-1.5">
+            <button
+              onClick={() => {
+                setProviderMode('demo');
+                setProviderModeState('demo');
+              }}
+              className={`text-[11px] font-mono px-2.5 py-1 rounded-full border ${
+                providerMode === 'demo'
+                  ? 'border-signal text-signal'
+                  : 'border-line text-muted'
+              }`}
+            >
+              Demo
+            </button>
+            <button
+              onClick={() => {
+                setProviderMode('live');
+                setProviderModeState('live');
+              }}
+              className={`text-[11px] font-mono px-2.5 py-1 rounded-full border ${
+                providerMode === 'live'
+                  ? 'border-signal text-signal'
+                  : 'border-line text-muted'
+              }`}
+            >
+              Live
+            </button>
+          </div>
+        </div>
+        {providerMode === 'live' && (
+          <p className="text-[10px] text-muted font-mono">
+            Live mode uses your X API credits — each refresh costs a small amount.
+          </p>
+        )}
+        <div className="mt-3">
+          <Row label="Refresh interval" value="60s" />
+        </div>
       </div>
 
       <h2 className="text-xs font-bold text-muted mb-1 mt-5">Telegram alerts</h2>
@@ -188,4 +231,4 @@ export default function SettingsPage() {
       <SignOutButton />
     </div>
   );
-}
+        }
