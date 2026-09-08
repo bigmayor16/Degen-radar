@@ -2,12 +2,8 @@ import { NextResponse } from 'next/server';
 import { extractTickers } from '@/lib/detection/ticker';
 import { extractContractAddresses } from '@/lib/detection/contractAddress';
 
-// A general Solana-memecoin-flavored query. Not tied to any specific
-// tracked account or keyword yet — a good next refinement once this
-// is working is building the query from the user's own tracked
-// accounts/keywords (Stage 7 data) instead of this fixed default.
 const DEFAULT_QUERY =
-  '(solana OR $SOL) (meme OR gem OR launch OR CA OR contract) lang:en -is:retweet';
+  '(solana OR pumpfun OR "pump.fun" OR "$SOL") (memecoin OR "meme coin" OR "fair launch" OR "stealth launch" OR CTO OR "contract address") lang:en -is:retweet';
 
 export async function GET(req: Request) {
   const apiKey = process.env.TWITTERAPI_IO_KEY;
@@ -55,4 +51,4 @@ export async function GET(req: Request) {
   });
 
   return NextResponse.json({ posts });
-      }
+}
