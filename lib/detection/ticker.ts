@@ -4,6 +4,11 @@
 const NON_TICKER_BLOCKLIST = new Set([
   '$USD', '$EUR', '$GBP', '$JPY', '$CAD', '$AUD',
   '$SPX', '$NASDAQ', '$DOW', '$VIX',
+  // Common stock tickers that occasionally get swept up by loose
+  // "meme"/"gem"/"launch" search queries — these are never the
+  // Solana memecoin the app is trying to detect.
+  '$MSFT', '$AAPL', '$GOOGL', '$GOOG', '$TSLA', '$AMZN', '$META',
+  '$NVDA', '$NFLX', '$AMD', '$INTC', '$BABA', '$DIS', '$KO',
 ]);
 
 /**
