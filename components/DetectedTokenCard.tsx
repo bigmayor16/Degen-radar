@@ -1,17 +1,31 @@
-import type { TokenStat } from '@/lib/detection/aggregate';
+import Link from 'next/link';
+import type { ScoredToken } from '@/lib/momentum';
 
 function timeAgo(iso: string) {
   const mins = Math.max(1, Math.floor((Date.now() - new Date(iso).getTime()) / 60000));
   return mins < 60 ? `${mins}m ago` : `${Math.floor(mins / 60)}h ago`;
 }
 
-export default function DetectedTokenCard({ token }: { token: TokenStat }) {
+function scoreColor(score: number) {
+  if (score >= 60) return 'text-signal border-signal/50';
+  if (score >= 30) return 'text-growth border-growth/50';
+  return 'text-muted border-line';
+}
+
+export default function DetectedTokenCard({ token }: { token: ScoredToken }) {
   return (
-    <div className="rounded-lg border border-line bg-panel p-3.5">
+    <Link
+      href={`/trending/${token.ticker.replace('$', '')}`}
+      className="block rounded-lg border border-line bg-panel p-3.5 active:bg-panelhi"
+    >
       <div className="flex items-start justify-between mb-3">
         <span className="font-mono font-bold text-sm">{token.ticker}</span>
-        <span className="font-mono text-[10px] text-muted">
-          first seen {timeAgo(token.firstSeen)}
+        <span
+          className={`font-mono text-xs font-bold rounded-full border px-2 py-0.5 ${scoreColor(
+            token.score
+          )}`}
+        >
+          {token.score}
         </span>
       </div>
 
@@ -22,7 +36,7 @@ export default function DetectedTokenCard({ token }: { token: TokenStat }) {
         <span className="text-right text-fog">{token.uniqueAccounts}</span>
         <span>Velocity</span>
         <span className="text-right text-growth">{token.mentionsPerMinute}/min</span>
-        <span>KOL mentions</span>
+        <span>KOLs</span>
         <span className="text-right text-kol">{token.kolMentions}</span>
       </div>
 
@@ -30,21 +44,8 @@ export default function DetectedTokenCard({ token }: { token: TokenStat }) {
         <span className={token.contractAddresses.length ? 'text-growth' : 'text-muted'}>
           {token.contractAddresses.length ? 'CA detected' : 'No CA yet'}
         </span>
-        <span className="text-muted">
-          top: {token.topAccounts[0] ? `@${token.topAccounts[0].username}` : '—'}
-        </span>
+        <span className="text-muted">{timeAgo(token.firstSeen)}</span>
       </div>
-
-      {token.contractAddresses.length > 0 && (
-        <div className="mt-3 flex gap-2">
-          <a className="flex-1 text-center text-[10px] font-mono border border-growth/50 text-growth rounded-md py-1.5">
-            DEX Screener
-          </a>
-          <a className="flex-1 text-center text-[10px] font-mono border border-line text-fog rounded-md py-1.5">
-            Solscan
-          </a>
-        </div>
-      )}
-    </div>
+    </Link>
   );
 }
