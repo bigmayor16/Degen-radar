@@ -68,7 +68,7 @@ export function aggregateTokens(posts: XPost[]): TokenStat[] {
   }
 
   const stats: TokenStat[] = [];
-  for (const [ticker, entry] of byTicker) {
+  byTicker.forEach((entry, ticker) => {
     const times = entry.mentions.map((p) => new Date(p.postedAt).getTime());
     const firstSeen = new Date(Math.min(...times)).toISOString();
     const latestSeen = new Date(Math.max(...times)).toISOString();
@@ -94,7 +94,7 @@ export function aggregateTokens(posts: XPost[]): TokenStat[] {
       topAccounts,
       contractAddresses: Array.from(entry.cas),
     });
-  }
+  });
 
   return stats.sort((a, b) => b.totalMentions - a.totalMentions);
 }
@@ -120,7 +120,7 @@ export function aggregateContractAddresses(posts: XPost[]): ContractStat[] {
   }
 
   const stats: ContractStat[] = [];
-  for (const [address, entry] of byCA) {
+  byCA.forEach((entry, address) => {
     const times = entry.mentions.map((p) => new Date(p.postedAt).getTime());
     stats.push({
       address,
@@ -131,7 +131,7 @@ export function aggregateContractAddresses(posts: XPost[]): ContractStat[] {
       latestSeen: new Date(Math.max(...times)).toISOString(),
       accounts: Array.from(entry.accounts),
     });
-  }
+  });
 
   return stats.sort((a, b) => b.totalMentions - a.totalMentions);
-      }
+}
