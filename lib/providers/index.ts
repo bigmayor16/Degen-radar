@@ -1,21 +1,28 @@
 import { DemoXDataProvider } from './demoProvider';
+import { LiveXDataProvider } from './liveProvider';
 import type { XDataProvider } from './types';
 
-let instance: XDataProvider | null = null;
+export type ProviderMode = 'demo' | 'live';
+const STORAGE_KEY = 'degen-radar-x-provider-mode';
+
+export function getProviderMode(): ProviderMode {
+  if (typeof window === 'undefined') return 'demo';
+  return (localStorage.getItem(STORAGE_KEY) as ProviderMode) || 'demo';
+}
+
+export function setProviderMode(mode: ProviderMode) {
+  if (typeof window !== 'undefined') localStorage.setItem(STORAGE_KEY, mode);
+}
 
 /**
- * Single place the rest of the app asks for X data. Right now this
- * always returns the demo provider. In Stage 9, this becomes:
- *
- *   return process.env.NEXT_PUBLIC_X_PROVIDER === 'live'
- *     ? new LiveXDataProvider()
- *     : new DemoXDataProvider();
- *
- * No other file needs to change when that happens.
+ * Single place the rest of the app asks for X data. Reads the saved
+ * mode (Settings toggles this) and returns the matching provider —
+ * everything downstream (Dashboard, Trending, Feed, detail page)
+ * only ever calls fetchRecentPosts()/fetchPostsForAccount(), so
+ * neither provider's internals leak into the UI code.
  */
 export function getXDataProvider(): XDataProvider {
-  if (!instance) instance = new DemoXDataProvider();
-  return instance;
+  return getProviderMode() === 'live' ? new LiveXDataProvider() : new DemoXDataProvider();
 }
 
 export * from './types';
