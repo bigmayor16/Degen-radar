@@ -1,0 +1,13 @@
+name: Check Degen Radar Alerts
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch: {}
+
+jobs:
+  check-alerts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call alert check endpoint
+        run: curl -fsS "https://degen-radar-five.vercel.app/api/alerts/check"
