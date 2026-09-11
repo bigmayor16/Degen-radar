@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { getXDataProvider } from '@/lib/providers';
+import { getXDataProvider, getProviderMode, type ProviderMode } from '@/lib/providers';
 import type { XPost } from '@/lib/providers/types';
 import PostCard from '@/components/PostCard';
 
@@ -12,8 +12,10 @@ export default function FeedPage() {
   const [posts, setPosts] = useState<XPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<Filter>('All');
+  const [mode, setMode] = useState<ProviderMode>('demo');
 
   useEffect(() => {
+    setMode(getProviderMode());
     let cancelled = false;
     getXDataProvider()
       .fetchRecentPosts()
@@ -45,8 +47,14 @@ export default function FeedPage() {
     <div>
       <div className="flex items-center justify-between mb-3">
         <h1 className="text-lg font-bold">Live X Feed</h1>
-        <span className="text-[10px] font-mono px-2 py-1 rounded border border-signal/40 text-signal">
-          DEMO
+        <span
+          className={`text-[10px] font-mono px-2 py-1 rounded border ${
+            mode === 'live'
+              ? 'border-growth/40 text-growth'
+              : 'border-signal/40 text-signal'
+          }`}
+        >
+          {mode === 'live' ? 'LIVE' : 'DEMO'}
         </span>
       </div>
 
